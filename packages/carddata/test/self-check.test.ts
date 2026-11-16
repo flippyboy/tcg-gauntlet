@@ -20,7 +20,7 @@ describe("selfCheck", () => {
     const db = attached(copyFixture());
     const problems = selfCheck(db);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toMatch(/only 112 distinct card names, expected 20000/);
+    expect(problems[0]).toMatch(/only 116 distinct card names, expected 20000/);
     db.close();
   });
 

@@ -62,6 +62,15 @@ const BACK_FACE_LAYOUTS = new Set([
   "reversible_card",
 ]);
 
+/** The basic lands default to their Unhinged printing (UNH 136 to 140). */
+const UNHINGED_BASICS: Readonly<Record<string, string>> = {
+  Plains: "136",
+  Island: "137",
+  Swamp: "138",
+  Mountain: "139",
+  Forest: "140",
+};
+
 const list = (s: string | null): string[] =>
   s === null || s === "" ? [] : s.split(/,\s*/).filter((x) => x !== "");
 
@@ -235,7 +244,7 @@ export class FakeCardLookup implements CardLookup {
       codes = new Set(def.sets);
     }
     const rows = this.byName.get(card.name) ?? [];
-    let pick = this.pickDefault(rows, codes);
+    let pick = this.pickUnhinged(rows) ?? this.pickDefault(rows, codes);
     if (pick === null && codes !== null) pick = this.pickDefault(rows, null);
     const result = pick === null ? null : this.printingRef(pick);
     this.defaultCache.set(cacheKey, result);
@@ -256,6 +265,22 @@ export class FakeCardLookup implements CardLookup {
     const result = q[0] === undefined ? null : this.printingRef(q[0]);
     this.arenaCache.set(card.name, result);
     return result;
+  }
+
+  /** The Unhinged printing of a basic land, whatever its flags. Null when missing. */
+  private pickUnhinged(rows: FixtureCard[]): FixtureCard | null {
+    const number = UNHINGED_BASICS[rows[0]?.name ?? ""];
+    if (number === undefined) return null;
+    const q = rows.filter(
+      (r) =>
+        r.setCode === "UNH" &&
+        r.number === number &&
+        list(r.availability).includes("paper") &&
+        isFront(r) &&
+        r.language === "English",
+    );
+    q.sort((a, b) => compareCodePoints(a.uuid, b.uuid));
+    return q[0] ?? null;
   }
 
   private pickDefault(

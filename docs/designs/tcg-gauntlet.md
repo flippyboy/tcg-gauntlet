@@ -612,6 +612,7 @@ When a deck line has no set code, the engine shows the card's default printing. 
   3. The numeric part of the collector number, ascending.
   4. The collector number as text.
   5. The MTGJSON `uuid`.
+* **Change after v1.0.1: basic lands.** `Plains`, `Island`, `Swamp`, `Mountain` and `Forest` default to their Unhinged printing (`UNH` 136 to 140, English, paper), although it is `isFunny`. This is an exception to qualifying rule 2 and the order, not a change of either: they still apply to every other card, and to a basic whose Unhinged printing is missing from the card data. Lines with a set code, the MTGA Arena-printing preference, and the pools are unchanged. `insertUnhingedBasics` fills these rows before `insertDefaultPrinting`, and `TOOL_SCHEMA` went from 1 to 2 so that existing derived files are rebuilt on the next start.
 * **Stability.** A new printing is always newer than the existing ones, so it can never change which printing is oldest. The default therefore stays the same over time.
 * **Set code without a collector number.** A line with a set code but no collector number uses the lowest collector number in that set.
 

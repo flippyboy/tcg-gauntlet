@@ -1,0 +1,9 @@
+1 Plains
+1 Island
+1 Swamp
+1 Mountain
+1 Forest
+4 Mountain (M15)
+4 Wastes
+2 Snow-Covered Island
+45 Plains (M15)

@@ -1,0 +1,9 @@
+1 Forest (MDD) 301
+1 Island (MDD) 294
+1 Mountain (MDD) 298
+4 Mountain (M15) 262
+1 Plains (MDD) 292
+45 Plains (M15) 250
+2 Snow-Covered Island (PANA) 258
+1 Swamp (MDD) 296
+4 Wastes (FIN) 309

@@ -6,6 +6,7 @@ import Database from "better-sqlite3";
 import { ENGINE_VERSION } from "@tcg-gauntlet/engine";
 import {
   CardDataError,
+  TOOL_SCHEMA,
   derivedPath,
   downloadAllPrintings,
   fetchMeta,
@@ -228,7 +229,7 @@ describe("refreshCardData", () => {
       const e = await expectFailure(s, dataDir, first, "self-check", {
         minCards: 100000,
       });
-      expect(e.message).toMatch(/only 112 distinct card names/);
+      expect(e.message).toMatch(/only 116 distinct card names/);
       // The old version still opens.
       const opened = await openCurrent(dataDir);
       expect(opened.ok).toBe(true);
@@ -391,6 +392,63 @@ describe("openCurrent", () => {
       ),
     ).toBe(true);
     opened.lookup.close();
+  });
+
+  it("rebuilds a derived file of an older tool schema, so the new default takes effect", async () => {
+    const s = await serve();
+    const dataDir = tempDir();
+    const first = await refreshCardData(base(s, dataDir));
+    const { official } = await modernBuilds();
+    const defaultOfPlains = async (): Promise<string> => {
+      const opened = await openCurrent(dataDir, {
+        formatDefs: [official],
+        verifyChecksum: false,
+      });
+      if (!opened.ok) throw new Error("open failed");
+      try {
+        const p = opened.lookup.defaultPrinting(
+          OFFICIAL_MODERN,
+          opened.lookup.findCard("Plains")!,
+        )!;
+        return `${p.set}/${p.number}`;
+      } finally {
+        opened.lookup.close();
+      }
+    };
+    expect(await defaultOfPlains()).toBe("UNH/136");
+
+    // Make the derived file look like the previous release's: tool schema 1, and
+    // the old default printing of Plains (the oldest non-funny one).
+    const mtg = new Database(mtgjsonPath(dataDir, first.current!), {
+      readonly: true,
+    });
+    const oldUuid = (
+      mtg
+        .prepare(
+          "SELECT uuid FROM cards WHERE name = 'Plains' AND setCode = 'M15' LIMIT 1",
+        )
+        .get() as { uuid: string }
+    ).uuid;
+    mtg.close();
+    const file = derivedPath(dataDir, first.current!);
+    const old = new Database(file);
+    old.prepare("UPDATE meta SET value = '1' WHERE key = 'tool_schema'").run();
+    old
+      .prepare("UPDATE default_printing SET uuid = ? WHERE name = 'Plains'")
+      .run(oldUuid);
+    old.close();
+
+    // The same MTGJSON version is still current, and the upgrade needs no manual step.
+    expect(await defaultOfPlains()).toBe("UNH/136");
+    const again = new Database(file, { readonly: true });
+    expect(
+      (
+        again
+          .prepare("SELECT value FROM meta WHERE key = 'tool_schema'")
+          .get() as { value: string }
+      ).value,
+    ).toBe(TOOL_SCHEMA);
+    again.close();
   });
 
   it("reports a file that is not a database as corrupt", async () => {

@@ -112,7 +112,7 @@ The cache is in `<data dir>/`:
 
 Building a format is a few `INSERT ... SELECT` statements in one transaction. A key that is already built is skipped.
 
-**Default printing.** For a line without a set code, a printing qualifies when it is a paper, English, front-face printing that is not online-only, funny or oversized, and not a promo unless the card has no other printing. For a custom format it must be in a listed set. The oldest qualifying printing wins, with ties broken by set type, collector number and `uuid`. The full rule is in [spec/deck-file.md](../spec/deck-file.md#printings) and the design.
+**Default printing.** For a line without a set code, a printing qualifies when it is a paper, English, front-face printing that is not online-only, funny or oversized, and not a promo unless the card has no other printing. For a custom format it must be in a listed set. The oldest qualifying printing wins, with ties broken by set type, collector number and `uuid`. The five basic lands are the exception: they default to their Unhinged printing (UNH 136 to 140). The full rule is in [spec/deck-file.md](../spec/deck-file.md#printings) and the design.
 
 ## The repo package
 

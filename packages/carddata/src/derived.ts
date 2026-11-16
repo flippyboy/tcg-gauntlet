@@ -20,9 +20,10 @@ process.env["SQLITE_USE_URI"] ??= "1";
 
 /**
  * Bump this when the derived tables or the rules that fill them change. A derived file
- * with another value is deleted and rebuilt.
+ * with another value is deleted and rebuilt. History: "2" made the Unhinged basics the
+ * default printing of the five basic lands.
  */
-export const TOOL_SCHEMA = "1";
+export const TOOL_SCHEMA = "2";
 
 /** A format to build: its key, and its definition (null for an official format). */
 export interface FormatBuild {
@@ -261,6 +262,7 @@ export class Derived {
     if (key.startsWith("official:")) {
       // Legality comes from MTGJSON, so there is no pool. Any set can supply the
       // default printing.
+      this.queries.insertUnhingedBasics(key);
       this.queries.insertDefaultPrinting(key, null);
     } else {
       if (def === null) throw new Error(`format ${key} needs its definition`);
@@ -280,6 +282,7 @@ export class Derived {
         full(def.exclude.map((o) => o.name)),
         full(def.banned),
       );
+      this.queries.insertUnhingedBasics(key);
       this.queries.insertDefaultPrinting(key, sets);
       this.queries.insertDefaultPrinting(key, null);
     }

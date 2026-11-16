@@ -171,6 +171,16 @@ describe("exportMtga", () => {
     );
   });
 
+  it("a basic land without a set code: the Arena printing, not Unhinged", () => {
+    const card = lookup.findCard("Mountain")!;
+    expect(lookup.defaultPrinting(OFFICIAL, card)?.set).toBe("UNH");
+    const arena = lookup.arenaPrinting(card)!;
+    expect(arena.set).not.toBe("UNH");
+    const r = mtga(resolve("4 Mountain\n"));
+    expect(r.text).toBe(`4 Mountain (${arena.set}) ${arena.number}`);
+    expect(r.warnings).toEqual([]);
+  });
+
   it("no set code, card has an Arena printing: the newest one, and no warning", () => {
     const r = mtga(resolve("2 Monastery Swiftspear\n"));
     expect(r.text).toBe("2 Monastery Swiftspear (PIO) 147");

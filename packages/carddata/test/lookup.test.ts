@@ -7,7 +7,9 @@ import {
   formatKey,
   parseFormatDef,
 } from "@tcg-gauntlet/engine";
-import { SqliteCardLookup } from "../src/index.js";
+import { join } from "node:path";
+import Database from "better-sqlite3";
+import { Derived, SqliteCardLookup } from "../src/index.js";
 import {
   OFFICIAL_MODERN,
   fixturesDir,
@@ -15,6 +17,7 @@ import {
   modernBuilds,
   openFixture,
   repoRoot,
+  tempDir,
 } from "./helpers.js";
 
 const names = readFileSync(`${fixturesDir}cards.txt`, "utf8")
@@ -75,6 +78,59 @@ describe("SqliteCardLookup", () => {
         );
       }
     }
+  });
+
+  it("defaults the basic lands to Unhinged, and only them", async () => {
+    const { sql, fake, presetKey } = await setup();
+    for (const lookup of [sql, fake]) {
+      for (const key of [OFFICIAL_MODERN, presetKey]) {
+        const got = ["Plains", "Island", "Swamp", "Mountain", "Forest"].map(
+          (n) => {
+            const p = lookup.defaultPrinting(key, lookup.findCard(n)!)!;
+            return `${p.set}/${p.number}`;
+          },
+        );
+        expect(got).toEqual([
+          "UNH/136",
+          "UNH/137",
+          "UNH/138",
+          "UNH/139",
+          "UNH/140",
+        ]);
+      }
+      const other = ["Wastes", "Snow-Covered Island", "Lightning Bolt"].map(
+        (n) =>
+          lookup.defaultPrinting(OFFICIAL_MODERN, lookup.findCard(n)!)!.set,
+      );
+      expect(other).toEqual(["OGW", "ICE", "LEA"]);
+      // The Unhinged printing is no pool printing and not on Arena.
+      const mountain = lookup.findCard("Mountain")!;
+      expect(lookup.arenaPrinting(mountain)?.set).not.toBe("UNH");
+    }
+    expect(sql.findPrinting("M15", undefined, "Mountain")?.number).toBe("262");
+  });
+
+  it("falls back to the normal rule when the Unhinged basics are missing", () => {
+    const { derived, mtg } = openFixture();
+    derived.close();
+    const w = new Database(mtg);
+    w.exec("DELETE FROM cards WHERE setCode = 'UNH' AND name = 'Island'");
+    w.close();
+    const dir = tempDir();
+    const sql = new SqliteCardLookup(
+      Derived.open({ derivedPath: join(dir, "d.sqlite"), mtgjsonPath: mtg }),
+    );
+    const island = sql.defaultPrinting(
+      OFFICIAL_MODERN,
+      sql.findCard("Island")!,
+    )!;
+    expect(island.set).not.toBe("UNH");
+    const plains = sql.defaultPrinting(
+      OFFICIAL_MODERN,
+      sql.findCard("Plains")!,
+    )!;
+    expect(`${plains.set}/${plains.number}`).toBe("UNH/136");
+    sql.close();
   });
 
   it("finds a printing by set and number, ignoring letter case", async () => {

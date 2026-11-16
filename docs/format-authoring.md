@@ -116,7 +116,7 @@ Set codes are MTGJSON's. They are in the column `code` of the `sets` table of `A
 
 - A deck that lists `4 Lightning Bolt (LEA) 161` is legal in a format whose `sets` do not include `LEA` if some listed set prints Lightning Bolt. The `(LEA) 161` part only chooses which image the site shows.
 - A set code and number that do not exist, or that belong to another card, give `E-PRINTING-UNKNOWN`. That is a data error. It does not say anything about legality.
-- A line with no set code shows the card's default printing. The default is the oldest English paper printing, and for a custom format it is limited to the listed sets. It only changes what the site displays.
+- A line with no set code shows the card's default printing. The default is the oldest English paper printing (the five basic lands use their Unhinged printing), and for a custom format it is limited to the listed sets. It only changes what the site displays.
 
 The field `legality_by` is the place for a later version to add formats that check printings. A version-1 tool refuses any other value.
 

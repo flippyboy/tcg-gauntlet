@@ -27,7 +27,7 @@ describe("Derived", () => {
     expect(count(derived, "SELECT COUNT(*) n FROM card_names_fts")).toBe(
       count(derived, "SELECT COUNT(*) n FROM card_names"),
     );
-    expect(count(derived, "SELECT COUNT(*) n FROM card_meta")).toBe(112);
+    expect(count(derived, "SELECT COUNT(*) n FROM card_meta")).toBe(116);
     expect(derived.getMeta("tool_schema")).toBe(TOOL_SCHEMA);
     expect(derived.getMeta("mtgjson_version")).toBe("5.3.0+20261115");
     expect(derived.formatKeys().sort()).toEqual(
@@ -201,7 +201,7 @@ describe("Derived", () => {
       derivedPath: join(dir, "d.sqlite"),
       mtgjsonPath: mtg,
     });
-    expect(d.queries.cardCount()).toBe(112);
+    expect(d.queries.cardCount()).toBe(116);
     d.close();
     // A plain connection can read the same file.
     const plain = new Database(mtg, { readonly: true });

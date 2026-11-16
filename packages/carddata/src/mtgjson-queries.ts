@@ -106,6 +106,17 @@ const PRINTING_FROM = `FROM mtg.cards c
   LEFT JOIN mtg.cardIdentifiers i ON i.uuid = c.uuid
   LEFT JOIN mtg.sets s ON s.code = c.setCode`;
 
+/** The set of the default basic lands. */
+export const UNHINGED_SET = "UNH";
+/** Basic land name to its collector number in Unhinged. */
+export const UNHINGED_BASICS: Readonly<Record<string, string>> = {
+  Plains: "136",
+  Island: "137",
+  Swamp: "138",
+  Mountain: "139",
+  Forest: "140",
+};
+
 /** Prepared statements over the attached MTGJSON schema. */
 export class MtgQueries {
   private readonly cache = new Map<string, Database.Statement>();
@@ -241,6 +252,31 @@ export class MtgQueries {
       include: includeJson,
       exclude: excludeJson,
       banned: bannedJson,
+    });
+  }
+
+  /**
+   * The exception to the default printing rule: the five basic lands default to
+   * their Unhinged printing (UNH 136 to 140, English, in paper), although MTGJSON
+   * marks it funny. Call it before `insertDefaultPrinting`, which skips names that
+   * already have a row. A basic whose UNH row is missing gets no row here and falls
+   * back to the normal rule. It does not touch the pool.
+   */
+  insertUnhingedBasics(formatKey: string): void {
+    this.stmt(
+      `INSERT INTO main.default_printing (format_key, name, uuid)
+       SELECT @key, name, uuid FROM (
+         SELECT c.name, c.uuid,
+           ROW_NUMBER() OVER (PARTITION BY c.name ORDER BY c.uuid) AS rn
+         FROM mtg.cards c
+         WHERE c.setCode = @set AND ${FRONT} AND c.language = 'English'
+           AND ${hasItem("c.availability", "paper")}
+           AND c.number = (SELECT value FROM json_each(@numbers) WHERE key = c.name)
+       ) WHERE rn = 1`,
+    ).run({
+      key: formatKey,
+      set: UNHINGED_SET,
+      numbers: JSON.stringify(UNHINGED_BASICS),
     });
   }
 

@@ -149,10 +149,81 @@ describe("resolveDeck: printings", () => {
 
   it("uses the default printing of the format", async () => {
     const key = await registered(tinyFormat("", "[M10, M11]"));
-    expect(printingOf("1 Lightning Bolt\n1 Mountain", key)).toEqual([
+    expect(printingOf("1 Lightning Bolt\n1 Ornithopter", key)).toEqual([
       "M10/146",
-      "M10/242",
+      "M10/216",
     ]);
+  });
+});
+
+describe("resolveDeck: default basic lands", () => {
+  const basics = "1 Plains\n1 Island\n1 Swamp\n1 Mountain\n1 Forest";
+  const unh = ["UNH/136", "UNH/137", "UNH/138", "UNH/139", "UNH/140"];
+
+  it("defaults the five basics to Unhinged, in official and custom formats", async () => {
+    expect(printingOf(basics)).toEqual(unh);
+    const key = await registered(tinyFormat("", "[M10, M11]"));
+    expect(printingOf(basics, key)).toEqual(unh);
+  });
+
+  it("keeps the set code of a line", () => {
+    expect(printingOf("4 Mountain (M15)\n1 Plains (M15) 250")).toEqual([
+      "M15/262",
+      "M15/250",
+    ]);
+  });
+
+  it("leaves Wastes and snow basics on the normal rule", () => {
+    expect(printingOf("1 Wastes\n1 Snow-Covered Island")).toEqual([
+      "OGW/183",
+      "ICE/371",
+    ]);
+  });
+
+  it("does not put the Unhinged printing in a pool", async () => {
+    const key = await registered(tinyFormat("", "[UNH]"));
+    expect(lookup.inPool(key, lookup.findCard("Mountain")!)).toBe(false);
+  });
+
+  it("falls back to the normal rule when the Unhinged printing is missing", () => {
+    const l = synthetic(
+      [
+        row({
+          name: "Plains",
+          setCode: "AAA",
+          number: "5",
+          supertypes: "Basic",
+        }),
+        row({
+          name: "Plains",
+          setCode: "UNH",
+          number: "136",
+          isFunny: 1,
+          supertypes: "Basic",
+        }),
+        row({
+          name: "Island",
+          setCode: "AAA",
+          number: "7",
+          supertypes: "Basic",
+        }),
+        row({
+          name: "Island",
+          setCode: "UNH",
+          number: "999",
+          isFunny: 1,
+          supertypes: "Basic",
+        }),
+      ],
+      [
+        { code: "AAA", releaseDate: "2000-01-01", type: "core" },
+        { code: "UNH", releaseDate: "2003-11-14", type: "funny" },
+      ],
+    );
+    const r = resolveDeck(deck("1 Plains\n1 Island"), OFFICIAL, l);
+    expect(
+      r.entries.map((e) => `${e.printing?.set}/${e.printing?.number}`),
+    ).toEqual(["UNH/136", "AAA/7"]);
   });
 });
 

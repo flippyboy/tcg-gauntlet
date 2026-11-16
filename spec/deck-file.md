@@ -143,6 +143,8 @@ A hint is used the same way as a set code without a collector number, but only w
 
 ### Default printing
 
+**Basic lands.** One exception comes before everything below. The default printing of `Plains`, `Island`, `Swamp`, `Mountain` and `Forest` is their Unhinged printing, set `UNH`, collector numbers 136, 137, 138, 139 and 140, in any format. The printing must be an English, front-face, paper printing; it is chosen although MTGJSON marks it funny, so condition 2 does not apply to it. If a card data file has no such printing for a basic land, that basic follows the rules below like any other card. No other card is affected: Wastes and the snow-covered basics follow the rules below. A set code on the line still wins, the MTGA export still prefers the Arena printing, and the format's pool is unchanged (the Unhinged printing is funny, so it never puts a card in a pool).
+
 **Qualifying printings.** A printing qualifies when all of these hold:
 
 1. Its MTGJSON `availability` includes `paper`.

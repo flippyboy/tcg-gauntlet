@@ -1,0 +1,20 @@
+{
+  "description": "The five basic lands default to their Unhinged printing when the line has no set code, although MTGJSON marks it funny. A set code is kept (Mountain M15). Wastes and Snow-Covered Island follow the normal default rule. The MTGA export of a line without a set code still uses the Arena printing, never UNH.",
+  "format": "official:modern",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "1": "UNH/136",
+    "2": "UNH/137",
+    "3": "UNH/138",
+    "4": "UNH/139",
+    "5": "UNH/140",
+    "6": "M15/262",
+    "7": "OGW/183",
+    "8": "ICE/371",
+    "9": "M15/250"
+  },
+  "expectedMtgaWarnings": [
+    { "code": "W-MTGA-UNAVAILABLE", "line": 6 },
+    { "code": "W-MTGA-UNAVAILABLE", "line": 9 }
+  ]
+}

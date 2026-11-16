@@ -26,6 +26,10 @@ Blackcleave Cliffs
 Swamp
 Forest
 Mountain
+Plains
+Island
+Wastes
+Snow-Covered Island
 Dismember
 Blood Moon
 Rest in Peace

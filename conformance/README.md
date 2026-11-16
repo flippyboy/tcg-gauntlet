@@ -87,6 +87,7 @@ It reads `fixtures/cards.txt`, copies every printing of those cards, with their 
 | `copies-5-lightning-bolt`, `copies-any-number-text`             | Copies over main deck and sideboard; the basic land and any-number exemptions.                               |
 | `split-and-dfc-names`, `split-dfc-exports`                      | Every spelling of split cards, double-faced and adventure cards by front face, and their exports.            |
 | `unknown-card-typos`                                            | `E-CARD-UNKNOWN`, and a back-face name that is not accepted.                                                 |
+| `basic-default-unh`                                             | Basic lands default to UNH; a set code is kept; Wastes and snow basics follow the normal rule; MTGA export.  |
 | `printing-unknown`, `dec-hints`                                 | Explicit printings, wrong ones, `[SET]` hints.                                                               |
 | `official-modern`, `official-vintage-restricted`                | Official formats: banned, not legal, restricted.                                                             |
 | `commander-section`                                             | `E-DECK-SECTION`.                                                                                            |
