@@ -1,0 +1,25 @@
+4 Delver of Secrets (MID) 47
+4 Dark Confidant (FIN) 94
+4 Tarmogoyf (FRA) 116
+3 Liliana of the Veil (DMU) 97
+4 Lightning Bolt (MSC) 806
+4 Terminate (MAR) 40
+2 Kolaghan's Command (HA5) 20
+4 Inquisition of Kozilek (STA) 31
+3 Thoughtseize (OTP) 20
+2 Maelstrom Pulse (FDN) 661
+4 Blood Crypt (TRK) 278
+4 Bloodstained Mire (MH3) 216
+3 Forest (MDD) 301
+3 Mountain (MDD) 298
+4 Overgrown Tomb (TRK) 289
+4 Swamp (MDD) 296
+4 Verdant Catacombs (SPG) 113
+
+1 Thoughtseize (OTP) 20
+2 Rest in Peace (MAR) 6
+2 Blood Moon (WOT) 40
+3 Dismember (SOA) 28
+1 Liliana of the Veil (DMU) 97
+2 Wear // Tear (PIO) 398
+4 Huntmaster of the Fells (SIS) 64

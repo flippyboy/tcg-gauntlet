@@ -1,0 +1,39 @@
+# Docker Compose example for the TCG Gauntlet app.
+#
+# Put the settings in a file named .env next to this file, or export them in your
+# shell. Only DECK_REPO_URL is required:
+#
+#   DECK_REPO_URL=https://github.com/<owner>/<repo>
+#   WEBHOOK_SECRET=<a long random string>
+#   PUBLIC_BASE_URL=https://gauntlet.example.com
+#
+# Start it with:  docker compose -f deploy/compose.yaml up -d
+# Every setting is described in docs/hosting.md.
+services:
+  app:
+    image: ghcr.io/flippyboy/tcg-gauntlet:v1
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Required. https://github.com/<owner>/<repo>, nothing else.
+      DECK_REPO_URL: ${DECK_REPO_URL:?Set DECK_REPO_URL to https://github.com/<owner>/<repo>}
+      DECK_REPO_BRANCH: ${DECK_REPO_BRANCH:-main}
+      # An empty value turns the webhook off. The app then finds changes by polling.
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+      # Used for the webhook URL that /status shows. An empty value means none.
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
+
+      # Behind a reverse proxy, uncomment the lines that apply. See "Behind a reverse
+      # proxy" in docs/hosting.md.
+      # ADDRESS_HEADER: X-Forwarded-For
+      # XFF_DEPTH: "1"
+      # ORIGIN: https://gauntlet.example.com
+    volumes:
+      # The clone, the card data, the history and the image cache.
+      - tcg-gauntlet-data:/data
+    # The app waits up to 25 seconds for a running sync when it stops.
+    stop_grace_period: 45s
+
+volumes:
+  tcg-gauntlet-data:

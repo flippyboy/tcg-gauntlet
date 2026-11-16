@@ -1,0 +1,109 @@
+# Values for the TCG Gauntlet chart.
+#
+# The chart always runs one replica with the Recreate strategy, and has no replicaCount
+# value. The app keeps its clone, card data and history on a volume that only one pod
+# can use (ReadWriteOnce), and it runs one sync loop. Two pods would conflict.
+
+image:
+  repository: ghcr.io/flippyboy/tcg-gauntlet
+  # Empty means "v" followed by the chart's appVersion, for example v1.4.2.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+deckRepo:
+  # Required. Only https://github.com/<owner>/<repo> is accepted, and the repo must be
+  # public. Sets DECK_REPO_URL.
+  url: ""
+  # Sets DECK_REPO_BRANCH.
+  branch: main
+
+# The address of the site, as users and GitHub reach it. Sets PUBLIC_BASE_URL, which the
+# /status page uses to show the webhook URL. Empty means none.
+publicBaseUrl: ""
+
+webhook:
+  # The secret of the GitHub webhook. When set, the chart creates a Secret with the key
+  # "webhook-secret" and passes it as WEBHOOK_SECRET. Prefer --set on the command line or
+  # existingSecret over a value in a file you commit. With no secret the webhook is off
+  # and the app polls instead.
+  secret: ""
+  # The name of a Secret you created yourself. It takes priority over `secret`.
+  existingSecret: ""
+  # The key in existingSecret that holds the value.
+  existingSecretKey: webhook-secret
+
+# More environment variables, as a list of Kubernetes env entries. The app reads these
+# (all optional unless noted; see docs/hosting.md):
+#   POLL_INTERVAL_SECONDS  seconds between checks of the deck repo, 10 to 3600 (30)
+#   MTGJSON_REFRESH_HOURS  hours between card data refreshes, 1 to 168 (24)
+#   IMAGE_CACHE_MAX_MB     size limit of the image cache, 50 to 100000 (500)
+#   HISTORY_MAX_VERSIONS   versions kept in the history, 1 to 10000 (100)
+#   LOG_LEVEL              debug, info, warn or error (info)
+#   MTGJSON_BASE_URL       the MTGJSON API address (https://mtgjson.com/api/v5)
+# Read by the Node adapter, for use behind a reverse proxy or an ingress:
+#   ADDRESS_HEADER         header that holds the client address, for example X-Forwarded-For
+#   XFF_DEPTH              number of proxies in front of the app (1)
+#   ORIGIN                 the public origin, for example https://gauntlet.example.com
+#   PROTOCOL_HEADER, HOST_HEADER  alternatives to ORIGIN
+# Do not set PORT or DATA_DIR: the probes, the Service and the volume use the defaults.
+extraEnv: []
+#  - name: ADDRESS_HEADER
+#    value: X-Forwarded-For
+#  - name: XFF_DEPTH
+#    value: "1"
+#  - name: ORIGIN
+#    value: https://gauntlet.example.com
+
+service:
+  type: ClusterIP
+  port: 3000
+  annotations: {}
+
+# Off by default. Read "Behind a reverse proxy" in docs/hosting.md and set ORIGIN,
+# ADDRESS_HEADER and XFF_DEPTH in extraEnv. POST /webhook/github must reach the app.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: gauntlet.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: gauntlet-tls
+  #    hosts:
+  #      - gauntlet.example.com
+
+persistence:
+  # When false, /data is an emptyDir and the data is lost when the pod is replaced.
+  enabled: true
+  # Use an existing claim instead of creating one.
+  existingClaim: ""
+  size: 5Gi
+  # Empty uses the cluster default. "-" sets storageClassName to "".
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  annotations: {}
+
+resources:
+  requests:
+    memory: 256Mi
+  limits:
+    memory: 768Mi
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

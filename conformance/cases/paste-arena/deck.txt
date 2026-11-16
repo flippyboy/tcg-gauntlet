@@ -1,0 +1,27 @@
+Deck
+4 Lightning Bolt (M11) 149
+4 Goblin Guide (ZEN) 126
+4 Monastery Swiftspear (KTK) 118
+4 Burst Lightning (ZEN) 119
+4 Arid Mesa (ZEN) 211
+4 Sacred Foundry (GTC) 245
+4 Wooded Foothills (KTK) 249
+4 Lightning Helix (RAV) 213
+4 Boros Charm
+4 Rift Bolt (TSP) 176
+3 Skullcrack
+3 Eidolon of the Great Revel
+4 Keldon Marauders
+2 Searing Spear
+2 Char
+2 Atarka's Command
+4 Mountain
+
+Sideboard
+2 Rest in Peace (RTR) 18
+2 Blood Moon
+3 Dismember
+2 Searing Spear
+2 Char
+2 Atarka's Command
+2 Wear // Tear (DGM) 135

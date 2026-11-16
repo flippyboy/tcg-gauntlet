@@ -1,0 +1,22 @@
+{
+  "description": "Typos and a back-face name. Each gives E-CARD-UNKNOWN with suggestions.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 1
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 2
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 3
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 4
+    }
+  ]
+}

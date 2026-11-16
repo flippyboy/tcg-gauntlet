@@ -1,0 +1,134 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # metadata-action lower-cases image names. Tags: v1.4.2, v1.4, v1, and
+      # latest only for tags without a pre-release part.
+      - name: App image metadata
+        id: meta-app
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/flippyboy/tcg-gauntlet
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+          flavor: |
+            latest=auto
+
+      - name: Validator image metadata
+        id: meta-validator
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/flippyboy/tcg-gauntlet-validator
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+          flavor: |
+            latest=auto
+
+      # The validator image bundles template/ for `init`, so the template must point
+      # at the major Action tag before that image is built. The ref needs only the
+      # tag; the Action's image digest is known only after the build (next step).
+      - name: Point the template at the major Action tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          major="${version%%.*}"
+          grep -q '__ACTION_REF__' template/.github/workflows/validate.yml
+          sed -i "s|__ACTION_REF__|${GITHUB_REPOSITORY}/actions/validate@v${major}|g" template/.github/workflows/validate.yml
+          ! grep -rq '__ACTION_REF__' template
+
+      - name: Build and push app image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: packages/app/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta-app.outputs.tags }}
+          labels: ${{ steps.meta-app.outputs.labels }}
+
+      - name: Build and push validator image
+        id: build-validator
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: packages/validator/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta-validator.outputs.tags }}
+          labels: ${{ steps.meta-validator.outputs.labels }}
+
+      # The chart is published as an OCI artifact. Its version and appVersion are the
+      # tag without the leading "v". The chart's default image tag is "v" + appVersion,
+      # which is the v{{version}} tag that metadata-action pushed above.
+      - uses: azure/setup-helm@v5
+
+      - name: Package and push the Helm chart
+        env:
+          TAG: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          helm package deploy/helm/tcg-gauntlet --version "${version}" --app-version "${version}"
+          echo "${GITHUB_TOKEN}" | helm registry login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+          helm push "tcg-gauntlet-${version}.tgz" oci://ghcr.io/flippyboy/charts
+
+      # Pin the Action to the exact validator image digest, commit that and the
+      # template change as a release commit, and move the tags onto it.
+      # actions/validate/action.yml must contain the placeholder __VALIDATOR_IMAGE__.
+      - name: Pin the Action, move tags
+        env:
+          TAG: ${{ github.ref_name }}
+          DIGEST: ${{ steps.build-validator.outputs.digest }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          major="${version%%.*}"
+          minor="${version#*.}"; minor="${minor%%.*}"
+
+          grep -q '__VALIDATOR_IMAGE__' actions/validate/action.yml
+          sed -i "s|__VALIDATOR_IMAGE__|ghcr.io/flippyboy/tcg-gauntlet-validator@${DIGEST}|g" actions/validate/action.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add actions/validate/action.yml template/.github/workflows/validate.yml
+          git commit -m "Release ${TAG}"
+
+          git tag -f "${TAG}"
+          git push --force origin "refs/tags/${TAG}"
+          # Pre-release tags (containing "-") do not move the floating tags.
+          if [[ "${version}" != *-* ]]; then
+            git tag -f "v${major}.${minor}"
+            git tag -f "v${major}"
+            git push --force origin "refs/tags/v${major}.${minor}" "refs/tags/v${major}"
+          fi

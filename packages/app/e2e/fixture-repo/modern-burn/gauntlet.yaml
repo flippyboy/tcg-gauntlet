@@ -1,0 +1,4 @@
+schema_version: 1
+name: Modern Burn
+format: preset:2015-modern@1
+description: The e2e fixture gauntlet with a burn deck.

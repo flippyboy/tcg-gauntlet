@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/flippyboy/tcg-gauntlet/spec/schemas/format-definition.v1.schema.json",
+  "title": "Format definition, schema version 1",
+  "description": "A custom format whose legality is decided by card name against an explicit list of sets.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]{1,40}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "legality_by": { "type": "string", "enum": ["name"] },
+    "sets": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z0-9]{2,6}$" },
+      "minItems": 1,
+      "maxItems": 500,
+      "uniqueItems": true
+    },
+    "banned": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "default": []
+    },
+    "restricted": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "default": []
+    },
+    "include": { "$ref": "#/$defs/overrides" },
+    "exclude": { "$ref": "#/$defs/overrides" },
+    "deck": {
+      "type": "object",
+      "properties": {
+        "min_main": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 250,
+          "default": 60
+        },
+        "max_main": { "type": "integer", "minimum": 0, "maximum": 250 },
+        "max_sideboard": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 250,
+          "default": 15
+        },
+        "max_copies": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 250,
+          "default": 4
+        },
+        "copy_exempt": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["basic_lands", "any_number_text"]
+          },
+          "uniqueItems": true,
+          "default": ["basic_lands", "any_number_text"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema_version", "id", "name", "legality_by", "sets"],
+  "additionalProperties": false,
+  "$defs": {
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "required": ["name", "reason"],
+        "additionalProperties": false
+      },
+      "default": []
+    }
+  }
+}

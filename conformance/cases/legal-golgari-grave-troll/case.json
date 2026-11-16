@@ -1,0 +1,5 @@
+{
+  "description": "Golgari Grave-Troll is legal in 2015 Modern (it is banned in current Modern).",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": []
+}

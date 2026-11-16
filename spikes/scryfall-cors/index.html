@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Scryfall CORS spike</title></head>
+<body>
+<h1>Scryfall image CORS test</h1>
+<p>Serve from a different origin than cards.scryfall.io: <code>python3 -m http.server 8000</code> in this folder, then open http://localhost:8000/.</p>
+<pre id="out">running...</pre>
+<script>
+const urls = {
+  "Lightning Bolt large front": "https://cards.scryfall.io/large/front/7/6/7673784e-db4b-43a1-8d55-1bb9fc1e284f.jpg?1783903008",
+  "Delver of Secrets large front": "https://cards.scryfall.io/large/front/6/9/6904ea20-e504-47da-95a0-08739fdde260.jpg?1783908173",
+  "Delver of Secrets large back (Insectile Aberration)": "https://cards.scryfall.io/large/back/6/9/6904ea20-e504-47da-95a0-08739fdde260.jpg?1783908173",
+};
+const out = document.getElementById("out");
+out.textContent = "page origin: " + location.origin + "\n";
+(async () => {
+  for (const [name, url] of Object.entries(urls)) {
+    try {
+      const res = await fetch(url, { mode: "cors" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      out.textContent += `OK   ${name}: ${blob.type}, ${blob.size} bytes\n`;
+    } catch (e) {
+      out.textContent += `FAIL ${name}: ${e}\n`;
+    }
+  }
+})();
+</script>
+</body></html>

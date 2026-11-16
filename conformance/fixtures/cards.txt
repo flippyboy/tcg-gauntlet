@@ -1,0 +1,121 @@
+# Every card name used by the conformance cases, one MTGJSON card name per line.
+# Split and double-faced cards use the full MTGJSON name. Lines starting with # are
+# comments. This file is the input of scripts/build-fixtures.ts.
+#
+# The last block lists the 32 cards on the 2015 Modern banned list, because the
+# preset check needs every name in presets/2015-modern@1.yaml to be a card.
+
+Dark Confidant
+Tarmogoyf
+Scavenging Ooze
+Lightning Bolt
+Terminate
+Inquisition of Kozilek
+Thoughtseize
+Liliana of the Veil
+Maelstrom Pulse
+Kolaghan's Command
+Blood Crypt
+Overgrown Tomb
+Stomping Ground
+Verdant Catacombs
+Bloodstained Mire
+Wooded Foothills
+Treetop Village
+Blackcleave Cliffs
+Swamp
+Forest
+Mountain
+Dismember
+Blood Moon
+Rest in Peace
+Arcbound Ravager
+Steel Overseer
+Signal Pest
+Memnite
+Ornithopter
+Vault Skirge
+Cranial Plating
+Frogmite
+Thoughtcast
+Mox Opal
+Springleaf Drum
+Galvanic Blast
+Etched Champion
+Master of Etherium
+Blinkmoth Nexus
+Inkmoth Nexus
+Darksteel Citadel
+Glimmervoid
+Welding Jar
+Spell Pierce
+Dispatch
+Burst Lightning
+Lightning Helix
+Boros Charm
+Rift Bolt
+Skullcrack
+Goblin Guide
+Monastery Swiftspear
+Eidolon of the Great Revel
+Keldon Marauders
+Searing Spear
+Char
+Atarka's Command
+Arid Mesa
+Sacred Foundry
+Golgari Grave-Troll
+Smuggler's Copter
+Seasoned Pyromancer
+Wear // Tear
+Dead // Gone
+Turn // Burn
+Fire // Ice
+Delver of Secrets // Insectile Aberration
+Huntmaster of the Fells // Ravager of the Fells
+Bonecrusher Giant // Stomp
+Sink into Stupor // Soporific Springs
+Relentless Rats
+Black Lotus
+Ancestral Recall
+Time Walk
+Mox Pearl
+Mana Crypt
+Sol Ring
+Brainstorm
+Chain Lightning
+Jötun Grunt
+
+# 2015 Modern banned list (presets/2015-modern@1.yaml)
+Ancestral Vision
+Ancient Den
+Birthing Pod
+Blazing Shoal
+Bloodbraid Elf
+Chrome Mox
+Cloudpost
+Dark Depths
+Deathrite Shaman
+Dig Through Time
+Dread Return
+Glimpse of Nature
+Great Furnace
+Green Sun's Zenith
+Hypergenesis
+Jace, the Mind Sculptor
+Mental Misstep
+Ponder
+Preordain
+Punishing Fire
+Rite of Flame
+Seat of the Synod
+Second Sunrise
+Seething Song
+Sensei's Divining Top
+Skullclamp
+Stoneforge Mystic
+Sword of the Meek
+Treasure Cruise
+Tree of Tales
+Umezawa's Jitte
+Vault of Whispers

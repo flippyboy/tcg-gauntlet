@@ -1,0 +1,10 @@
+{
+  "description": "An unknown schema_version gives E-SCHEMA-VERSION.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-SCHEMA-VERSION",
+      "line": 2
+    }
+  ]
+}

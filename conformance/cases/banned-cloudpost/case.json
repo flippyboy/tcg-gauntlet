@@ -1,0 +1,10 @@
+{
+  "description": "Cloudpost is banned. The 2015modern.com Scryfall link wrongly leaves it out.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-LEGAL-BANNED",
+      "line": 17
+    }
+  ]
+}

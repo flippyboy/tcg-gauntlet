@@ -1,0 +1,4 @@
+schema_version: 1
+name: 2015 Modern example gauntlet
+format: preset:2015-modern@1
+description: An example gauntlet that uses the bundled 2015 Modern preset.

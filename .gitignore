@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.svelte-kit
+coverage
+spikes/**/out/
+/data
+.tcg-gauntlet-cache
+test-results
+playwright-report
+
+# EGM review working files (local only; the design is docs/designs/tcg-gauntlet.md)
+/concepts_brief.md
+/design_draft.md
+/*_report.md

@@ -1,0 +1,9 @@
+{
+  "description": "A main deck of 59 cards is one short.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-DECK-MAIN-SIZE"
+    }
+  ]
+}

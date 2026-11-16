@@ -1,0 +1,32 @@
+4 Dark Confidant (FIN) 94
+3 Scavenging Ooze (FDN) 232
+4 Tarmogoyf (FRA) 116
+3 Liliana of the Veil (DMU) 97
+4 Lightning Bolt (M11) 149
+3 Terminate (MAR) 40
+2 Kolaghan's Command (HA5) 20
+3 Inquisition of Kozilek (STA) 31
+2 Thoughtseize (OTP) 20
+2 Maelstrom Pulse (FDN) 661
+3 Blackcleave Cliffs (ONE) 248
+3 Blood Crypt (TRK) 278
+3 Bloodstained Mire (MH3) 216
+3 Forest (MDD) 301
+2 Mountain (MDD) 298
+3 Overgrown Tomb (TRK) 289
+2 Stomping Ground (TRK) 299
+3 Swamp (MDD) 296
+2 Treetop Village (TLE) 60
+3 Verdant Catacombs (SPG) 113
+3 Wooded Foothills (MH3) 236
+
+1 Inquisition of Kozilek (STA) 31
+2 Thoughtseize (OTP) 20
+1 Rest in Peace (MAR) 6
+1 Scavenging Ooze (FDN) 232
+1 Terminate (MAR) 40
+1 Blood Moon (WOT) 40
+3 Dismember (SOA) 28
+2 Kolaghan's Command (HA5) 20
+1 Liliana of the Veil (DMU) 97
+2 Maelstrom Pulse (FDN) 661

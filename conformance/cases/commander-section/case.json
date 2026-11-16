@@ -1,0 +1,10 @@
+{
+  "description": "A Commander section is not allowed. Its card counts in neither the main deck nor the sideboard.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-DECK-SECTION",
+      "line": 1
+    }
+  ]
+}

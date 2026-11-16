@@ -1,0 +1,10 @@
+{
+  "description": "Repeated tags break the schema.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-SCHEMA-INVALID",
+      "line": 3
+    }
+  ]
+}

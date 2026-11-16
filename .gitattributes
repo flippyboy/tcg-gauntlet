@@ -1,0 +1,5 @@
+# Conformance fixtures are byte-exact: some have CRLF, some have no final newline.
+conformance/** -text
+
+# The e2e fixture expectation has CRLF line ends.
+packages/app/e2e/expected/** -text

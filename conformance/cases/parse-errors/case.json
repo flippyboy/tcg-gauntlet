@@ -1,0 +1,26 @@
+{
+  "description": "Lines that break the grammar each give E-PARSE-LINE. Parsing goes on.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-PARSE-LINE",
+      "line": 1
+    },
+    {
+      "code": "E-PARSE-LINE",
+      "line": 2
+    },
+    {
+      "code": "E-PARSE-LINE",
+      "line": 3
+    },
+    {
+      "code": "E-PARSE-LINE",
+      "line": 4
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 5
+    }
+  ]
+}

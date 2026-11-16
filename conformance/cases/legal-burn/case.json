@@ -1,0 +1,74 @@
+{
+  "description": "A legal 2015 Modern Burn deck with front matter, explicit printings and SB: lines.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "9": "ZEN/119",
+    "10": "RAV/213",
+    "11": "GTC/148",
+    "12": "TSP/176",
+    "13": "GTC/106",
+    "14": "ZEN/126",
+    "15": "KTK/118",
+    "16": "JOU/94",
+    "17": "PLC/102",
+    "18": "M13/147",
+    "19": "RAV/117",
+    "20": "DTK/213",
+    "21": "M11/149",
+    "22": "ZEN/211",
+    "23": "KTK/249",
+    "24": "RAV/280",
+    "25": "8ED/343",
+    "26": "RTR/18",
+    "27": "8ED/178",
+    "28": "NPH/57",
+    "29": "M13/147",
+    "30": "RAV/117",
+    "31": "DTK/213",
+    "32": "GTC/106",
+    "33": "JOU/94"
+  },
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 9
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 12
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 14
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 17
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 18
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 19
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 21
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 22
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 29
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 30
+    }
+  ]
+}

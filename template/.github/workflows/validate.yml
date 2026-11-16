@@ -1,0 +1,28 @@
+# Checks every deck in this repo against the format rules of its gauntlet.
+#
+# The job is named "validate". Require it as a status check on `main`
+# (see CONTRIBUTING.md). It runs on `pull_request`, never on `pull_request_target`,
+# and has read-only access and no secrets, so a pull request from a fork cannot
+# reach anything it should not.
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      # The whole history is needed to find the changes since the base commit.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # The release process replaces this placeholder with the Action's real
+      # reference, for example flippyboy/tcg-gauntlet/actions/validate@v1.
+      - uses: __ACTION_REF__

@@ -1,0 +1,14 @@
+{
+  "description": "Golgari Grave-Troll is banned in current Modern. Chain Lightning is not legal in Modern at all.",
+  "format": "official:modern",
+  "expectedViolations": [
+    {
+      "code": "E-LEGAL-BANNED",
+      "line": 7
+    },
+    {
+      "code": "E-LEGAL-NOT-IN-POOL",
+      "line": 8
+    }
+  ]
+}

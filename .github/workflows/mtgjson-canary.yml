@@ -1,0 +1,60 @@
+name: MTGJSON canary
+
+# Checks every day that the newest MTGJSON release still works with this tool: the
+# schema the carddata queries use is intact, the committed conformance fixtures are
+# what the release produces, and the conformance corpus passes against real data.
+#
+# A failing run notifies the maintainers through GitHub's normal workflow-failure
+# email. No issue is opened.
+#
+# GitHub disables scheduled workflows in a public repository after 60 days with no
+# repository activity. If the canary stops running, push any commit, or re-enable the
+# workflow in the Actions tab.
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CANARY_DATA: ${{ runner.temp }}/canary-data
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Steps 1 and 2: download the latest MTGJSON, check both checksums, run the
+      # carddata self-check, and build the derived tables.
+      - name: Download MTGJSON and run the self-check
+        run: pnpm --filter @tcg-gauntlet/carddata exec node scripts/canary.ts refresh --data-dir "$CANARY_DATA"
+
+      # Step 3: regenerate the fixtures (item 42) from the downloaded file. The
+      # committed fixtures must be identical.
+      - name: Regenerate the fixtures and fail on any difference
+        run: |
+          mtgjson="$CANARY_DATA/$(jq -r .path "$CANARY_DATA/mtgjson/current.json")"
+          node scripts/build-fixtures.ts --mtgjson "$mtgjson"
+          if [ -n "$(git status --porcelain -- conformance/fixtures)" ]; then
+            git status --porcelain -- conformance/fixtures
+            echo "::error::The conformance fixtures differ from the newest MTGJSON release. Run 'node scripts/build-fixtures.ts --mtgjson <AllPrintings.sqlite>' and review the diff."
+            exit 1
+          fi
+
+      # Step 4: the conformance corpus through SqliteCardLookup, over the full file.
+      - name: Run the conformance corpus through SqliteCardLookup
+        run: pnpm --filter @tcg-gauntlet/carddata exec node scripts/canary.ts conformance --data-dir "$CANARY_DATA"

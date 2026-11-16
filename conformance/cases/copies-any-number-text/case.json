@@ -1,0 +1,5 @@
+{
+  "description": "Relentless Rats and basic lands are exempt from the copy limit.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": []
+}

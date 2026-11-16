@@ -1,0 +1,72 @@
+{
+  "description": "A legal 2015 Modern Affinity deck, in the MTGO layout (Sideboard line, CRLF).",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "1": "DST/100",
+    "2": "M11/214",
+    "3": "MBS/131",
+    "4": "SOM/174",
+    "5": "MRD/224",
+    "6": "NPH/76",
+    "7": "5DN/113",
+    "8": "MRD/172",
+    "9": "MRD/54",
+    "10": "SOM/179",
+    "11": "LRW/261",
+    "12": "SOM/91",
+    "13": "SOM/154",
+    "14": "ALA/49",
+    "15": "DST/163",
+    "16": "MBS/145",
+    "17": "DST/164",
+    "19": "MRD/274",
+    "20": "ZEN/67",
+    "21": "NPH/7",
+    "22": "MRD/281",
+    "23": "SOM/154",
+    "24": "ALA/49"
+  },
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 3
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 4
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 7
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 13
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 14
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 19
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 21
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 22
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 23
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 24
+    }
+  ]
+}

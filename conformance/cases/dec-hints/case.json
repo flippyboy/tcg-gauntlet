@@ -1,0 +1,15 @@
+{
+  "description": "Magic Workstation lines. A [SET] hint is used only when it is a set that has the card, and ignored otherwise.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "3": "M11/149",
+    "4": "ZEN/126",
+    "5": "ZEN/211",
+    "6": "8ED/178",
+    "7": "ARB/46",
+    "8": "8ED/343",
+    "9": "RTR/18",
+    "10": "DGM/135"
+  }
+}

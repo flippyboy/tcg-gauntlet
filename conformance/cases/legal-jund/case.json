@@ -1,0 +1,44 @@
+{
+  "description": "A legal 2015 Modern Jund deck, written as a plain list with a blank-line sideboard.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "1": "RAV/81",
+    "2": "FUT/153",
+    "3": "M14/195",
+    "4": "M11/149",
+    "5": "ARB/46",
+    "6": "ROE/115",
+    "7": "LRW/145",
+    "8": "ISD/105",
+    "9": "ARB/92",
+    "10": "DTK/224",
+    "11": "DIS/171",
+    "12": "RAV/279",
+    "13": "GPT/165",
+    "14": "ZEN/229",
+    "15": "KTK/230",
+    "16": "KTK/249",
+    "17": "10E/361",
+    "18": "SOM/224",
+    "19": "8ED/339",
+    "20": "8ED/347",
+    "21": "8ED/343",
+    "23": "NPH/57",
+    "24": "ARB/92",
+    "25": "DTK/224",
+    "26": "ISD/105",
+    "27": "ROE/115",
+    "28": "ARB/46",
+    "29": "LRW/145",
+    "30": "M14/195",
+    "31": "8ED/178",
+    "32": "RTR/18"
+  },
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 4
+    }
+  ]
+}

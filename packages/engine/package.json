@@ -1,0 +1,28 @@
+{
+  "name": "@tcg-gauntlet/engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "prebuild": "node scripts/write-version.ts",
+    "build": "tsc -b && node scripts/copy-generated.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p scripts && tsc --noEmit -p test",
+    "test": "vitest run",
+    "gen:schemas": "node scripts/compile-schemas.ts"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  }
+}

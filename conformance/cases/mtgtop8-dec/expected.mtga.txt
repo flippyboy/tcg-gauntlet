@@ -1,0 +1,25 @@
+4 Goblin Guide (ZEN) 126
+4 Monastery Swiftspear (PIO) 147
+3 Eidolon of the Great Revel (EA2) 12
+4 Keldon Marauders (PLC) 102
+4 Burst Lightning (SOA) 41
+4 Lightning Bolt (M11) 149
+2 Atarka's Command (HA5) 21
+4 Boros Charm (FDN) 721
+4 Lightning Helix (MKM) 218
+2 Searing Spear (M13) 147
+3 Skullcrack (OTP) 27
+2 Char (RAV) 117
+4 Rift Bolt (TSP) 176
+4 Arid Mesa (ZEN) 211
+4 Mountain (MDD) 298
+4 Sacred Foundry (TRK) 295
+4 Wooded Foothills (KTK) 249
+
+2 Atarka's Command (HA5) 21
+2 Rest in Peace (RTR) 18
+2 Searing Spear (M13) 147
+2 Blood Moon (WOT) 40
+2 Char (RAV) 117
+3 Dismember (SOA) 28
+2 Wear // Tear (DGM) 135

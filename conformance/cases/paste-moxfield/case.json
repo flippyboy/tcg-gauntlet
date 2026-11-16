@@ -1,0 +1,5 @@
+{
+  "description": "A Moxfield export: a SIDEBOARD: header (upper case, with a colon) and set codes with collector numbers.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": []
+}

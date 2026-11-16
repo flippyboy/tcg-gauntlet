@@ -1,0 +1,155 @@
+/* Theme tokens and the base element styles. Light by default, dark through
+   prefers-color-scheme. Component styles live in the components. */
+:root {
+  color-scheme: light dark;
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --fg: #1d1f24;
+  --muted: #5d6270;
+  --border: #dcdad3;
+  --hover: #eeece6;
+  --accent: #2f5fb3;
+  --accent-fg: #ffffff;
+  --ok: #1b6e3c;
+  --ok-bg: #e4f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #9a6200;
+  --warn-bg: #fff3d6;
+  --warn-fg: #4d3200;
+  --shadow: rgba(20, 22, 30, 0.22);
+  --measure: 72rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161b;
+    --surface: #1d2027;
+    --fg: #e8e9ec;
+    --muted: #a0a5b1;
+    --border: #343843;
+    --hover: #2a2e38;
+    --accent: #7fa8ee;
+    --accent-fg: #0d1522;
+    --ok: #6fd498;
+    --ok-bg: #12301f;
+    --bad: #ff8f87;
+    --bad-bg: #3a1a18;
+    --warn: #e6b04a;
+    --warn-bg: #3a2c10;
+    --warn-fg: #f6e3b8;
+    --shadow: rgba(0, 0, 0, 0.6);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font:
+    1rem/1.55 system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+h1 {
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin: 0.4rem 0 0.75rem;
+}
+h2 {
+  font-size: 1.25rem;
+  margin: 2rem 0 0.75rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+pre {
+  overflow-x: auto;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+button,
+.button {
+  font: inherit;
+  cursor: pointer;
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+button.secondary,
+.button.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.prose :where(h1, h2, h3, h4) {
+  margin: 1.5rem 0 0.5rem;
+}
+.prose :where(p, ul, ol) {
+  max-width: 70ch;
+}
+.prose blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

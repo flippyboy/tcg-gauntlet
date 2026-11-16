@@ -1,0 +1,10 @@
+// Deck file created with mtgtop8.com
+// NAME : Hints
+4 [M11] Lightning Bolt
+4 [] Goblin Guide
+4 [ZEN] Arid Mesa
+1 [9E] Blood Moon
+4 [XXXX] Terminate
+43 [] Mountain
+SB:  2 [] Rest in Peace
+SB:  3 [DGM] Wear / Tear

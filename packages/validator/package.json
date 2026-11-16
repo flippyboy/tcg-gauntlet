@@ -1,0 +1,32 @@
+{
+  "name": "@tcg-gauntlet/validator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "tcg-gauntlet-validate": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b && node scripts/copy-template.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p scripts && tsc --noEmit -p test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "@tcg-gauntlet/carddata": "workspace:*",
+    "@tcg-gauntlet/engine": "workspace:*",
+    "@tcg-gauntlet/repo": "workspace:*"
+  },
+  "devDependencies": {
+    "@tcg-gauntlet/conformance": "workspace:*"
+  }
+}

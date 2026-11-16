@@ -1,0 +1,15 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "rootDir": "../../..",
+    "declaration": false,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@tcg-gauntlet/engine": ["../../engine/src/index.ts"],
+      "@tcg-gauntlet/conformance": ["../../conformance/src/index.ts"]
+    }
+  },
+  "include": ["*.ts"]
+}

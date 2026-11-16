@@ -1,0 +1,127 @@
+# One replica. The app keeps its clone, card data and history on a volume that only
+# one pod can use, and it runs one sync loop. Recreate stops the old pod before it
+# starts the new one, so two pods never share the volume.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tcg-gauntlet.fullname" . }}
+  labels:
+    {{- include "tcg-gauntlet.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "tcg-gauntlet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if or .Values.podAnnotations (and .Values.webhook.secret (not .Values.webhook.existingSecret)) }}
+      annotations:
+        {{- if and .Values.webhook.secret (not .Values.webhook.existingSecret) }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      labels:
+        {{- include "tcg-gauntlet.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "tcg-gauntlet.serviceAccountName" . }}
+      automountServiceAccountToken: false
+      # The app waits up to 25 seconds for a running sync when it stops.
+      terminationGracePeriodSeconds: 45
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        # The image runs as the user "node" (uid 1000, gid 1000).
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: {{ include "tcg-gauntlet.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: DECK_REPO_URL
+              value: {{ required "deckRepo.url is required, for example --set deckRepo.url=https://github.com/<owner>/<repo>" .Values.deckRepo.url | quote }}
+            - name: DECK_REPO_BRANCH
+              value: {{ .Values.deckRepo.branch | quote }}
+            {{- if include "tcg-gauntlet.secretName" . }}
+            - name: WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tcg-gauntlet.secretName" . }}
+                  key: {{ include "tcg-gauntlet.secretKey" . }}
+                  optional: true
+            {{- end }}
+            {{- with .Values.publicBaseUrl }}
+            - name: PUBLIC_BASE_URL
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # Not ready until the first snapshot exists. A first start downloads the card
+          # data, which can take minutes, so the pod stays out of the Service until then.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            # Every file the app writes is under /data, except SQLite's temporary files.
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "tcg-gauntlet.claimName" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,10 @@
+{
+  "description": "Treasure Cruise is on the 2015 Modern banned list.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-LEGAL-BANNED",
+      "line": 4
+    }
+  ]
+}

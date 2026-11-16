@@ -1,0 +1,23 @@
+node_modules
+dist
+build
+.svelte-kit
+coverage
+/data
+.tcg-gauntlet-cache
+pnpm-lock.yaml
+**/generated/**
+# byte-exact fixtures, some with CRLF
+conformance/**
+# not code
+docs/**
+spikes/**
+/concepts_brief.md
+/design_draft.md
+/*_report.md
+# existing EGM section is kept byte-for-byte
+CLAUDE.md
+test-results
+playwright-report
+# Helm templates are not valid YAML
+deploy/helm/*/templates/

@@ -1,0 +1,10 @@
+{
+  "description": "An unknown front matter field is a warning, not an error.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "W-FRONTMATTER-UNKNOWN-FIELD",
+      "line": 5
+    }
+  ]
+}

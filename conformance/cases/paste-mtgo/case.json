@@ -1,0 +1,5 @@
+{
+  "description": "MTGO export: CRLF and a blank line before the sideboard.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": []
+}

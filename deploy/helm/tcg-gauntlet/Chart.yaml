@@ -1,0 +1,13 @@
+apiVersion: v2
+name: tcg-gauntlet
+description: Hosts the TCG Gauntlet app, which reads a public GitHub deck repo and serves its decks.
+type: application
+# The release workflow sets both versions from the Git tag with
+# `helm package --version X --app-version X`. These values are placeholders.
+version: 0.0.0
+appVersion: "0.0.0"
+home: https://github.com/flippyboy/tcg-gauntlet
+sources:
+  - https://github.com/flippyboy/tcg-gauntlet
+annotations:
+  license: MIT

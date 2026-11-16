@@ -1,0 +1,126 @@
+# 2015 Modern, revision 1.
+#
+# 2015 Modern is a community format. It allows every core set and expansion
+# from Eighth Edition (8ED) to Magic Origins (ORI), plus Time Spiral
+# "Timeshifted" (TSB), with the Modern banned list as it stood at the time of
+# Magic Origins.
+#
+# Sources:
+#   - Legal sets and banned cards: https://www.2015modern.com/banned-cards
+#   - Banned list: the Modern banned list set by the January 19, 2015
+#     Banned & Restricted announcement.
+#
+# This file is immutable once released. A change is a new revision, as a new
+# file. See presets/README.md.
+schema_version: 1
+id: 2015-modern
+name: 2015 Modern
+legality_by: name
+
+# The 49 core and expansion sets from 8ED to ORI, in release order.
+# TSB has set type "expansion" in MTGJSON, and leaving it out would drop 119
+# cards that the site allows.
+sets:
+  [
+    8ED,
+    MRD,
+    DST,
+    5DN,
+    CHK,
+    BOK,
+    SOK,
+    9ED,
+    RAV,
+    GPT,
+    DIS,
+    CSP,
+    TSP,
+    TSB,
+    PLC,
+    FUT,
+    10E,
+    LRW,
+    MOR,
+    SHM,
+    EVE,
+    ALA,
+    CON,
+    ARB,
+    M10,
+    ZEN,
+    WWK,
+    ROE,
+    M11,
+    SOM,
+    MBS,
+    NPH,
+    M12,
+    ISD,
+    DKA,
+    AVR,
+    M13,
+    RTR,
+    GTC,
+    DGM,
+    M14,
+    THS,
+    BNG,
+    JOU,
+    M15,
+    KTK,
+    FRF,
+    DTK,
+    ORI,
+  ]
+
+# The Modern banned list as of January 19, 2015: 32 cards, matched by name.
+#
+# Golgari Grave-Troll is legal. It is not on the banned list. The site's
+# banned-cards page confirms this, so it must stay out of this list.
+#
+# Cloudpost is banned. The Scryfall query that 2015modern.com links from its
+# legal-sets page has only 31 exclusions and leaves Cloudpost out, so the
+# site's search result contains it. That is a defect of the link. The
+# banned-cards page lists all 32 cards, including Cloudpost. Do not remove
+# Cloudpost to match the link.
+banned:
+  - Ancestral Vision
+  - Ancient Den
+  - Birthing Pod
+  - Blazing Shoal
+  - Bloodbraid Elf
+  - Chrome Mox
+  - Cloudpost
+  - Dark Depths
+  - Deathrite Shaman
+  - Dig Through Time
+  - Dread Return
+  - Glimpse of Nature
+  - Great Furnace
+  - "Green Sun's Zenith"
+  - Hypergenesis
+  - "Jace, the Mind Sculptor"
+  - Mental Misstep
+  - Ponder
+  - Preordain
+  - Punishing Fire
+  - Rite of Flame
+  - Seat of the Synod
+  - Second Sunrise
+  - Seething Song
+  - "Sensei's Divining Top"
+  - Skullclamp
+  - Stoneforge Mystic
+  - Sword of the Meek
+  - Treasure Cruise
+  - Tree of Tales
+  - "Umezawa's Jitte"
+  - Vault of Whispers
+
+# No restricted cards, and no include or exclude overrides. The set list and
+# the banned list alone give exactly the pool on 2015modern.com.
+
+deck:
+  min_main: 60
+  max_sideboard: 15
+  max_copies: 4

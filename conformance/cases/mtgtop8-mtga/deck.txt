@@ -1,0 +1,25 @@
+4 Memnite (SOM) 174
+4 Ornithopter (MRD) 224
+3 Signal Pest (MBS) 131
+4 Arcbound Ravager (DST) 100
+4 Steel Overseer (M11) 214
+4 Vault Skirge (NPH) 76
+2 Etched Champion (SOM) 154
+2 Master of Etherium (ALA) 49
+4 Frogmite (MRD) 172
+4 Galvanic Blast (SOM) 91
+4 Thoughtcast (MRD) 54
+3 Mox Opal (SOM) 179
+2 Springleaf Drum (LRW) 261
+4 Cranial Plating (5DN) 113
+4 Blinkmoth Nexus (DST) 163
+4 Darksteel Citadel (DST) 164
+4 Inkmoth Nexus (MBS) 145
+
+2 Glimmervoid (MRD) 281
+3 Welding Jar (MRD) 274
+1 Dispatch (NPH) 7
+3 Spell Pierce (ZEN) 67
+2 Etched Champion (SOM) 154
+2 Master of Etherium (ALA) 49
+2 Wear // Tear (DGM) 135

@@ -1,0 +1,14 @@
+{
+  "description": "Restricted cards are limited to 1 copy over main deck and sideboard. Time Walk is in both, Mox Pearl is doubled. Jotun Grunt matches Jotun Grunt with an umlaut.",
+  "format": "official:vintage",
+  "expectedViolations": [
+    {
+      "code": "E-LEGAL-RESTRICTED",
+      "line": 6
+    },
+    {
+      "code": "E-LEGAL-RESTRICTED",
+      "line": 7
+    }
+  ]
+}

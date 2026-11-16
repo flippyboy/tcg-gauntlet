@@ -1,0 +1,25 @@
+{
+  "description": "MTGA export. A line without a set code uses the newest Arena printing (Burst Lightning), or the resolved printing with a warning when there is none (Goblin Guide). A line with a set code keeps it: no warning on Arena (Monastery Swiftspear KTK), a warning off Arena (Lightning Bolt M11, Burst Lightning ZEN).",
+  "format": "official:modern",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "1": "ZEN/119",
+    "2": "ZEN/126",
+    "3": "KTK/118",
+    "4": "M11/149"
+  },
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 2
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 4
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 7
+    }
+  ]
+}

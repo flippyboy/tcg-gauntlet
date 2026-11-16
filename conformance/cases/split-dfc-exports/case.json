@@ -1,0 +1,19 @@
+{
+  "description": "Split and double-faced cards in all three exports.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 2
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 7
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 15
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/flippyboy/tcg-gauntlet/spec/schemas/gauntlet.v1.schema.json",
+  "title": "gauntlet.yaml, schema version 1",
+  "description": "The file that marks a top-level folder of a deck repo as a gauntlet.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1, "default": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "format": {
+      "type": "string",
+      "pattern": "^(preset:[a-z0-9-]{1,40}@[0-9]{1,4}|repo:formats/[A-Za-z0-9._-]{1,100}\\.yaml|(official:)?(standard|pioneer|modern|legacy|vintage|pauper))$"
+    },
+    "description": { "type": "string", "maxLength": 1000 }
+  },
+  "required": ["name", "format"],
+  "additionalProperties": false
+}

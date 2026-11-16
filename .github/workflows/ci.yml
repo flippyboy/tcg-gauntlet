@@ -1,0 +1,261 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Reads the pnpm version from "packageManager" in package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      # Build and typecheck come before lint: the typed lint rules read the type
+      # declarations that `tsc -b` writes to each package's dist (conformance imports
+      # the built engine).
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm lint
+      - run: pnpm format
+
+      # Phase 3: the engine's schema validators and version file are generated and
+      # committed. Regenerate them, and fail on any difference (modified or untracked).
+      - name: Check generated engine files
+        run: |
+          pnpm --filter @tcg-gauntlet/engine gen:schemas
+          pnpm --filter @tcg-gauntlet/engine exec node scripts/write-version.ts
+          if [ -n "$(git status --porcelain -- packages/engine/src/generated packages/engine/src/version.ts)" ]; then
+            git status --porcelain -- packages/engine/src/generated packages/engine/src/version.ts
+            git diff -- packages/engine/src/generated packages/engine/src/version.ts
+            echo "::error::Generated engine files are out of date. Run 'pnpm --filter @tcg-gauntlet/engine gen:schemas' and commit the result."
+            exit 1
+          fi
+
+      - run: pnpm test
+
+      # Later phases add steps here, in the phase that creates the code they check.
+      # `pnpm typecheck` above already covers packages/app (svelte-check, through
+      # `pnpm -r --if-present typecheck`), and `pnpm test` runs its unit tests.
+
+  # The Helm chart in deploy/helm/tcg-gauntlet: lint, render with several value sets,
+  # and validate the rendered manifests against the Kubernetes schemas.
+  helm:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFORM_VERSION: v0.8.0
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: azure/setup-helm@v5
+
+      - name: Install kubeconform
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
+            -o "$RUNNER_TEMP/kubeconform.tar.gz"
+          mkdir "$RUNNER_TEMP/kubeconform"
+          tar -xzf "$RUNNER_TEMP/kubeconform.tar.gz" -C "$RUNNER_TEMP/kubeconform" kubeconform
+          echo "$RUNNER_TEMP/kubeconform" >> "$GITHUB_PATH"
+
+      - name: Lint
+        run: helm lint deploy/helm/tcg-gauntlet --set deckRepo.url=https://github.com/example/decks --strict
+
+      - name: Lint fails without deckRepo.url
+        run: |
+          if helm lint deploy/helm/tcg-gauntlet --strict; then
+            echo "::error::helm lint passed without deckRepo.url"
+            exit 1
+          fi
+
+      - name: Render and validate
+        run: |
+          set -euo pipefail
+          chart=deploy/helm/tcg-gauntlet
+          url=https://github.com/example/decks
+          render() { helm template tcg-gauntlet "$chart" --set deckRepo.url="$url" "$@" | kubeconform -strict -summary -; }
+          render
+          render --set ingress.enabled=true --set ingress.className=nginx \
+            --set 'ingress.tls[0].secretName=gauntlet-tls' \
+            --set 'ingress.tls[0].hosts[0]=gauntlet.example.com' \
+            --set webhook.existingSecret=gauntlet-webhook --set persistence.enabled=false
+          render --set webhook.secret=example --set persistence.existingClaim=my-claim
+
+  # Phase 6: the validator image builds, and the image validates template/ with --all.
+  # The same image runs the way actions/validate/action.yml runs it (as the runner's
+  # user, with the workspace and the card-data cache mounted), so this also checks
+  # the Dockerfile's runtime stage: presets, git, the bin link and the bundled
+  # template. The card data is the real MTGJSON, cached by week like the Action does.
+  validator-image:
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: ${{ runner.temp }}/tcg-gauntlet-cache
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the validator image
+        run: docker build -f packages/validator/Dockerfile -t tcg-gauntlet-validator:ci .
+
+      - name: Week for the cache key
+        id: week
+        run: echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.DATA_DIR }}
+          key: tcg-gauntlet-mtgjson-${{ steps.week.outputs.week }}
+          restore-keys: tcg-gauntlet-mtgjson-
+
+      - name: Validate template/ with --all
+        run: |
+          mkdir -p "$DATA_DIR"
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$PWD/template:/github/workspace" -w /github/workspace \
+            -e GITHUB_WORKSPACE=/github/workspace \
+            -v "$DATA_DIR:/cache" \
+            -v "$GITHUB_STEP_SUMMARY:/github/summary" -e GITHUB_STEP_SUMMARY=/github/summary \
+            -e GITHUB_ACTIONS=true \
+            tcg-gauntlet-validator:ci --data-dir /cache --output github --all
+
+      # init writes the bundled template into an empty folder, and the result must
+      # validate too.
+      - name: init, then validate the result
+        run: |
+          mkdir "$RUNNER_TEMP/init-repo"
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$RUNNER_TEMP/init-repo:/w" -w /w \
+            tcg-gauntlet-validator:ci init
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$RUNNER_TEMP/init-repo:/w" -w /w \
+            -v "$DATA_DIR:/cache" \
+            tcg-gauntlet-validator:ci --data-dir /cache --all
+
+  # Phase 6: how long a validator run takes on template/. A cold run downloads the card
+  # data into an empty folder, a warm run starts from that folder. Both times go to the
+  # job summary. The job fails when the warm run takes more than 60 s, which is the
+  # budget for a deck repo's pull request check.
+  ci-timing:
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: ${{ runner.temp }}/timing-cache
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the validator image
+        run: docker build -f packages/validator/Dockerfile -t tcg-gauntlet-validator:ci .
+
+      - name: Cold run, then warm run
+        run: |
+          set -euo pipefail
+          mkdir -p "$DATA_DIR"
+          run() {
+            docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+              -v "$PWD/template:/github/workspace" -w /github/workspace \
+              -v "$DATA_DIR:/cache" \
+              tcg-gauntlet-validator:ci --data-dir /cache --all
+          }
+          start=$(date +%s.%N); run; cold=$(echo "$(date +%s.%N) - $start" | bc)
+          start=$(date +%s.%N); run; warm=$(echo "$(date +%s.%N) - $start" | bc)
+          {
+            echo "### Validator timing on template/"
+            echo
+            echo "| Run | Seconds |"
+            echo "|---|---|"
+            printf '| Cold (empty cache, downloads MTGJSON) | %.1f |\n' "$cold"
+            printf '| Warm (cache present) | %.1f |\n' "$warm"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$(echo "$warm > 60" | bc)" = 1 ]; then
+            echo "::error::The warm validator run took ${warm} s, over the 60 s limit."
+            exit 1
+          fi
+
+  # Phase 7: the app image builds, and the Playwright smoke suite (packages/app/e2e)
+  # runs against it. The deck repo is a fixture repository on the runner, mounted
+  # into the container as /fixtures/deck-repo; the suite adds commits to it from the
+  # host. MTGJSON (the mini fixture) and the card images come from two small servers
+  # on the runner, which the container reaches as host.docker.internal. The container
+  # runs as the runner's user, so git accepts the mounted repository's owner.
+  app-image:
+    runs-on: ubuntu-latest
+    env:
+      E2E_DIR: ${{ runner.temp }}/e2e
+      MTGJSON_PORT: "8801"
+      IMAGES_PORT: "8802"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Build the app image
+        run: docker build -f packages/app/Dockerfile -t tcg-gauntlet-app:ci .
+
+      - run: pnpm install --frozen-lockfile --filter "@tcg-gauntlet/app"
+
+      - name: Install Chromium for Playwright
+        run: pnpm --filter @tcg-gauntlet/app exec playwright install --with-deps chromium
+
+      - name: Start the fixtures (deck repo, MTGJSON, images)
+        run: |
+          mkdir -p "$E2E_DIR/data"
+          node packages/app/e2e/fixtures.ts --dir "$E2E_DIR" --host 0.0.0.0 \
+            --mtgjson-port "$MTGJSON_PORT" --images-port "$IMAGES_PORT" \
+            > "$E2E_DIR/fixtures.json" &
+          for _ in $(seq 1 50); do
+            [ -s "$E2E_DIR/fixtures.json" ] && break
+            sleep 0.2
+          done
+          cat "$E2E_DIR/fixtures.json"
+
+      - name: Run the image
+        run: |
+          docker run -d --name app --user "$(id -u):$(id -g)" \
+            -p 3000:3000 --add-host=host.docker.internal:host-gateway \
+            -v "$E2E_DIR/deck-repo:/fixtures/deck-repo:ro" \
+            -v "$E2E_DIR/data:/data" \
+            -e ALLOW_INSECURE_TEST_REPO_URL=1 \
+            -e DECK_REPO_URL=file:///fixtures/deck-repo \
+            -e MTGJSON_BASE_URL="http://host.docker.internal:$MTGJSON_PORT" \
+            -e TCG_GAUNTLET_IMAGE_UPSTREAM="http://host.docker.internal:$IMAGES_PORT" \
+            -e TCG_GAUNTLET_MIN_CARDS=100 \
+            -e WEBHOOK_SECRET=e2e-webhook-secret \
+            -e LOG_LEVEL=info \
+            tcg-gauntlet-app:ci
+          for _ in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:3000/healthz && exit 0
+            sleep 1
+          done
+          docker logs app
+          exit 1
+
+      - name: Playwright smoke suite
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_REPO_DIR: ${{ runner.temp }}/e2e/deck-repo
+          E2E_WEBHOOK_SECRET: e2e-webhook-secret
+        run: pnpm --filter @tcg-gauntlet/app e2e
+
+      - name: Container logs and memory
+        if: always()
+        run: |
+          docker logs app || true
+          {
+            echo "### App container after the smoke suite"
+            echo
+            docker stats --no-stream --format 'Memory: {{.MemUsage}}' app || true
+          } >> "$GITHUB_STEP_SUMMARY"

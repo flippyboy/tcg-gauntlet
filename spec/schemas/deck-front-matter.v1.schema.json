@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/flippyboy/tcg-gauntlet/spec/schemas/deck-front-matter.v1.schema.json",
+  "title": "Deck front matter, schema version 1",
+  "description": "The YAML block between the leading --- lines of a deck file. Every field is optional. Unknown fields are reported as W-FRONTMATTER-UNKNOWN-FIELD.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "author": { "type": "string", "maxLength": 120 },
+    "archetype": { "type": "string", "maxLength": 60 },
+    "description": { "type": "string", "maxLength": 1000 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 30 },
+      "maxItems": 20,
+      "uniqueItems": true
+    },
+    "source": { "type": "string", "pattern": "^https?://" }
+  },
+  "additionalProperties": false
+}

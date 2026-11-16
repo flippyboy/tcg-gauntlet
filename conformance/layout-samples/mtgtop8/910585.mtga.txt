@@ -1,0 +1,32 @@
+4 Endurance (SPG) 48
+4 Oliphaunt (LTR) 139
+44 Subtlety (SPG) 45
+4 Wistfulness (ECL) 252
+3 Generous Ent (LTR) 169
+33 Striped Riverwinder (AKR) 82
+2 Seasoned Cryomancer (FRA) 38
+1 Colossal Skyturtle (NEO) 216
+4 Force of Negation (TLE) 13
+4 Violent Outburst (J25) 746
+1 Sink into Stupor (MH3) 241
+3 Living End (SOA) 30
+1 Teferi, Time Raveler (WAR) 221
+4 Misty Rainforest (SPG) 111
+1 Boseiju, Who Endures (NEO) 266
+1 Breeding Pool (RNA) 246
+1 Commercial District (MKM) 259
+1 Forest (ZNR) 384
+1 Hedge Maze (MKM) 262
+1 Island (ZNR) 381
+1 Sacred Foundry (GRN) 254
+1 Steam Vents (GRN) 257
+1 Stomping Ground (RNA) 259
+1 Temple Garden (GRN) 258
+1 Thundering Falls (MKM) 269
+
+1 Teferi, Time Raveler (WAR) 221
+3 Clarion Conqueror (TDM) 5
+3 Mystical Dispute (ELD) 58
+32 Dismember (SPG) 41
+2 Force of Vigor (OTP) 29
+1 Brotherhood's End (SOA) 39

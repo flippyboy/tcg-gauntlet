@@ -1,0 +1,106 @@
+name: TCG Gauntlet validate
+description: >-
+  Checks the decks of a deck repo against the format rules of their gauntlets, with
+  the TCG Gauntlet validator. Needs a Linux runner with Docker, and a checkout with
+  the full history (fetch-depth: 0).
+author: Filip Jansson
+
+inputs:
+  all:
+    description: "Check every deck, not only what changed. 'true' or 'false'."
+    default: "false"
+  data-dir:
+    description: >-
+      Where the MTGJSON card data is cached. Empty means a folder in the runner's
+      temp directory.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    # 1. Pick what to compare against. A pull request uses the merge base with its
+    #    target branch, a push uses the commit before the push. Without a usable base
+    #    (a new branch, a force-push that dropped the old commit, any other event),
+    #    every deck is checked.
+    - name: Pick the comparison base
+      id: base
+      shell: bash
+      env:
+        INPUT_ALL: ${{ inputs.all }}
+        INPUT_DATA_DIR: ${{ inputs.data-dir }}
+        EVENT_NAME: ${{ github.event_name }}
+        BASE_REF: ${{ github.base_ref }}
+        BEFORE: ${{ github.event.before }}
+      run: |
+        set -euo pipefail
+        base=""
+        if [ "$INPUT_ALL" != "true" ]; then
+          case "$EVENT_NAME" in
+            pull_request | pull_request_target)
+              base="$(git merge-base "origin/$BASE_REF" HEAD 2>/dev/null || true)"
+              ;;
+            push)
+              base="$BEFORE"
+              ;;
+          esac
+          case "$base" in
+            "" | *[!0-9a-f]* | 0000000000000000000000000000000000000000) base="" ;;
+          esac
+          if [ -n "$base" ] && ! git rev-parse --verify --quiet "$base^{commit}" >/dev/null; then
+            base=""
+          fi
+        fi
+        if [ -n "$base" ]; then
+          echo "args=--changed-since $base" >> "$GITHUB_OUTPUT"
+          echo "Checking the decks changed since $base"
+        else
+          echo "args=--all" >> "$GITHUB_OUTPUT"
+          echo "Checking every deck"
+        fi
+        data_dir="${INPUT_DATA_DIR:-$RUNNER_TEMP/tcg-gauntlet-cache}"
+        mkdir -p "$data_dir"
+        echo "data_dir=$data_dir" >> "$GITHUB_OUTPUT"
+        # The cache key changes once a week. The validator itself compares the cached
+        # MTGJSON version with Meta.json, so the key only decides how often the cache
+        # is replaced.
+        echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+    # 2. Restore the card-data cache.
+    - name: Restore the card-data cache
+      id: cache
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ steps.base.outputs.data_dir }}
+        key: tcg-gauntlet-mtgjson-${{ steps.base.outputs.week }}
+        restore-keys: tcg-gauntlet-mtgjson-
+
+    # 3. Run the validator image. It runs as the runner's user, so the files it
+    #    writes into the cache and the workspace belong to the runner.
+    - name: Run the validator
+      shell: bash
+      env:
+        ARGS: ${{ steps.base.outputs.args }}
+        DATA_DIR: ${{ steps.base.outputs.data_dir }}
+      run: |
+        set -euo pipefail
+        # The summary file must exist before it is mounted.
+        touch "$GITHUB_STEP_SUMMARY"
+        # shellcheck disable=SC2086 # $ARGS is "--all" or "--changed-since <sha>"
+        docker run --rm \
+          --user "$(id -u):$(id -g)" -e HOME=/tmp \
+          -v "$GITHUB_WORKSPACE:/github/workspace" -w /github/workspace \
+          -e GITHUB_WORKSPACE=/github/workspace \
+          -v "$DATA_DIR:/cache" \
+          -v "$GITHUB_STEP_SUMMARY:/github/summary" -e GITHUB_STEP_SUMMARY=/github/summary \
+          -e GITHUB_ACTIONS=true \
+          __VALIDATOR_IMAGE__ \
+          --data-dir /cache --output github $ARGS
+
+    # 4. Save the cache, also after a failed run: the download is not wasted when
+    #    the decks have errors. A key that already exists cannot be saved again.
+    - name: Save the card-data cache
+      if: always() && steps.cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ steps.base.outputs.data_dir }}
+        key: tcg-gauntlet-mtgjson-${{ steps.base.outputs.week }}

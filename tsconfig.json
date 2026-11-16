@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "types": ["node"] },
+  "include": ["vitest.config.ts", "scripts/*.ts"],
+  "references": [
+    { "path": "packages/engine" },
+    { "path": "packages/conformance" },
+    { "path": "packages/carddata" },
+    { "path": "packages/repo" },
+    { "path": "packages/validator" }
+  ]
+}

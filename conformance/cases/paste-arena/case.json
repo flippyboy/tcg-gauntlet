@@ -1,0 +1,31 @@
+{
+  "description": "An MTG Arena export: Deck and Sideboard headers, set codes and collector numbers.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedPrintings": {
+    "2": "M11/149",
+    "3": "ZEN/126",
+    "4": "KTK/118",
+    "5": "ZEN/119",
+    "6": "ZEN/211",
+    "7": "GTC/245",
+    "8": "KTK/249",
+    "9": "RAV/213",
+    "10": "GTC/148",
+    "11": "TSP/176",
+    "12": "GTC/106",
+    "13": "JOU/94",
+    "14": "PLC/102",
+    "15": "M13/147",
+    "16": "RAV/117",
+    "17": "DTK/213",
+    "18": "8ED/343",
+    "21": "RTR/18",
+    "22": "8ED/178",
+    "23": "NPH/57",
+    "24": "M13/147",
+    "25": "RAV/117",
+    "26": "DTK/213",
+    "27": "DGM/135"
+  }
+}

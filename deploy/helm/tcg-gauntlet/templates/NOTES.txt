@@ -1,0 +1,32 @@
+TCG Gauntlet {{ .Chart.AppVersion }} is installed as "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+It reads {{ .Values.deckRepo.url }} (branch {{ .Values.deckRepo.branch }}).
+
+The first start downloads the card data. The pod is not ready until that is done, which can take minutes.
+
+To reach the app:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+{{- else }}
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "tcg-gauntlet.fullname" . }} 3000:{{ .Values.service.port }}
+  then open http://localhost:3000
+{{- end }}
+
+GitHub webhook:
+{{- if include "tcg-gauntlet.secretName" . }}
+  Payload URL: {{ if .Values.publicBaseUrl }}{{ .Values.publicBaseUrl }}{{ else }}<the public address of the app>{{ end }}/webhook/github
+  Content type: application/json
+  Secret: the value of the secret "{{ include "tcg-gauntlet.secretName" . }}", key "{{ include "tcg-gauntlet.secretKey" . }}".
+{{- else }}
+  The webhook is off because no webhook secret is set. The app polls the deck repo instead.
+  To turn it on, set webhook.secret or webhook.existingSecret. The URL is <public address>/webhook/github.
+{{- end }}
+
+Only public GitHub repos work. The app clones the deck repo without credentials.
+{{- if not .Values.persistence.enabled }}
+
+WARNING: persistence.enabled is false. The data volume is an emptyDir. The clone, the card
+data and the history are deleted when the pod is deleted or moves to another node, and the
+next start downloads the card data again.
+{{- end }}

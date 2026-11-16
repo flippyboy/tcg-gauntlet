@@ -1,0 +1,51 @@
+{
+  "description": "x",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [],
+  "expectedMtgaWarnings": [
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 2
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 5
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 7
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 11
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 13
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 14
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 15
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 20
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 21
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 23
+    },
+    {
+      "code": "W-MTGA-UNAVAILABLE",
+      "line": 25
+    }
+  ]
+}

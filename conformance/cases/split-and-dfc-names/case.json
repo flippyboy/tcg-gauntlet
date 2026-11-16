@@ -1,0 +1,26 @@
+{
+  "description": "Split cards in every spelling, double-faced cards by front face, a curly apostrophe. A back-face name alone is unknown. Fire // Ice and Bonecrusher Giant are not in the pool.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-DECK-COPIES",
+      "line": 1
+    },
+    {
+      "code": "E-LEGAL-NOT-IN-POOL",
+      "line": 8
+    },
+    {
+      "code": "E-LEGAL-NOT-IN-POOL",
+      "line": 9
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 10
+    },
+    {
+      "code": "E-CARD-UNKNOWN",
+      "line": 11
+    }
+  ]
+}

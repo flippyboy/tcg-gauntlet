@@ -1,0 +1,9 @@
+{
+  "description": "61 main-deck cards are allowed (no maximum). 16 sideboard cards are one too many.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-DECK-SIDEBOARD-SIZE"
+    }
+  ]
+}

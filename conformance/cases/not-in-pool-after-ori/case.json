@@ -1,0 +1,10 @@
+{
+  "description": "Smuggler's Copter is first printed after Magic Origins.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-LEGAL-NOT-IN-POOL",
+      "line": 4
+    }
+  ]
+}

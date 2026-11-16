@@ -1,0 +1,30 @@
+{
+  "description": "Set and number that do not exist, belong to another card, a lower-case set code, a set without a number, and a star in the collector number.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-PRINTING-UNKNOWN",
+      "line": 1
+    },
+    {
+      "code": "E-PRINTING-UNKNOWN",
+      "line": 2
+    },
+    {
+      "code": "E-PRINTING-UNKNOWN",
+      "line": 3
+    }
+  ],
+  "expectedPrintings": {
+    "1": "M10/146",
+    "2": "ZEN/126",
+    "3": "ZEN/119",
+    "4": "KTK/118",
+    "5": "RAV/213",
+    "6": "GTC/148",
+    "7": "9ED/176★",
+    "8": "9ED/176",
+    "9": "8ED/343",
+    "11": "NPH/57"
+  }
+}

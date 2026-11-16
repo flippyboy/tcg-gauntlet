@@ -1,0 +1,33 @@
+---
+name: Burn
+author: Example Player
+archetype: Burn
+tags: [aggro, red]
+source: https://example.com/decks/burn
+---
+// Main deck
+4 Burst Lightning (ZEN) 119
+4x Lightning Helix
+4 Boros Charm
+4 Rift Bolt
+3 Skullcrack
+4 Goblin Guide (ZEN) 126
+4 Monastery Swiftspear (KTK) 118
+3 Eidolon of the Great Revel
+4 Keldon Marauders
+2 Searing Spear
+2 Char
+2 Atarka's Command
+4 Lightning Bolt (M11) 149
+4 Arid Mesa (ZEN) 211
+4 Wooded Foothills
+4 Sacred Foundry
+4 Mountain
+SB: 2 Rest in Peace
+SB: 2 Blood Moon
+SB: 3 Dismember
+SB: 2 Searing Spear
+SB: 2 Char
+SB: 2 Atarka's Command
+SB: 1 Skullcrack
+SB: 1 Eidolon of the Great Revel

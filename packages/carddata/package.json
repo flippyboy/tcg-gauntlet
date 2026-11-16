@@ -1,0 +1,30 @@
+{
+  "name": "@tcg-gauntlet/carddata",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p scripts && tsc --noEmit -p test",
+    "test": "vitest run",
+    "canary": "node scripts/canary.ts"
+  },
+  "dependencies": {
+    "@tcg-gauntlet/engine": "workspace:*",
+    "better-sqlite3": "^13.2.0",
+    "lru-cache": "^11.5.3"
+  },
+  "devDependencies": {
+    "@tcg-gauntlet/conformance": "workspace:*",
+    "@types/better-sqlite3": "^9.6.0"
+  }
+}

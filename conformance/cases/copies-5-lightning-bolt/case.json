@@ -1,0 +1,10 @@
+{
+  "description": "4 Lightning Bolt in the main deck and 1 in the sideboard make 5.",
+  "format": "preset:2015-modern@1",
+  "expectedViolations": [
+    {
+      "code": "E-DECK-COPIES",
+      "line": 13
+    }
+  ]
+}
