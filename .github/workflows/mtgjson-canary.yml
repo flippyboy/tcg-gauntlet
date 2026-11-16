@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CANARY_DATA: ${{ runner.temp }}/canary-data
+      CANARY_DATA: /tmp/canary-data
     steps:
       - uses: actions/checkout@v7
 

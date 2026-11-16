@@ -100,7 +100,7 @@ jobs:
   validator-image:
     runs-on: ubuntu-latest
     env:
-      DATA_DIR: ${{ runner.temp }}/tcg-gauntlet-cache
+      DATA_DIR: /tmp/tcg-gauntlet-cache
     steps:
       - uses: actions/checkout@v7
 
@@ -148,7 +148,7 @@ jobs:
   ci-timing:
     runs-on: ubuntu-latest
     env:
-      DATA_DIR: ${{ runner.temp }}/timing-cache
+      DATA_DIR: /tmp/timing-cache
     steps:
       - uses: actions/checkout@v7
 
@@ -189,7 +189,7 @@ jobs:
   app-image:
     runs-on: ubuntu-latest
     env:
-      E2E_DIR: ${{ runner.temp }}/e2e
+      E2E_DIR: /tmp/e2e
       MTGJSON_PORT: "8801"
       IMAGES_PORT: "8802"
     steps:
@@ -246,7 +246,7 @@ jobs:
       - name: Playwright smoke suite
         env:
           E2E_BASE_URL: http://127.0.0.1:3000
-          E2E_REPO_DIR: ${{ runner.temp }}/e2e/deck-repo
+          E2E_REPO_DIR: /tmp/e2e/deck-repo
           E2E_WEBHOOK_SECRET: e2e-webhook-secret
         run: pnpm --filter @tcg-gauntlet/app e2e
 
