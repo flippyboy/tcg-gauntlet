@@ -25,4 +25,4 @@ jobs:
 
       # The release process replaces this placeholder with the Action's real
       # reference, for example flippyboy/tcg-gauntlet/actions/validate@v1.
-      - uses: __ACTION_REF__
+      - uses: flippyboy/tcg-gauntlet/actions/validate@v1

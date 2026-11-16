@@ -93,7 +93,7 @@ runs:
           -v "$DATA_DIR:/cache" \
           -v "$GITHUB_STEP_SUMMARY:/github/summary" -e GITHUB_STEP_SUMMARY=/github/summary \
           -e GITHUB_ACTIONS=true \
-          __VALIDATOR_IMAGE__ \
+          ghcr.io/flippyboy/tcg-gauntlet-validator@sha256:1f6136bcb6cf88999256ac7019f4bbf58d56647b0276d3833e189302461d2fca \
           --data-dir /cache --output github $ARGS
 
     # 4. Save the cache, also after a failed run: the download is not wasted when
