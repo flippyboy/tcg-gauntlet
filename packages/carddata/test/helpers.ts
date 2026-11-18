@@ -20,6 +20,13 @@ export const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 export const fixturesDir = `${repoRoot}conformance/fixtures/`;
 export const miniFixture = `${fixturesDir}mini-allprintings.sqlite`;
 
+/** The MTGJSON version the committed fixtures were built from, as cards.json records it. */
+export const fixtureVersion = (
+  JSON.parse(readFileSync(`${fixturesDir}cards.json`, "utf8")) as {
+    mtgjson: { version: string };
+  }
+).mtgjson.version;
+
 const dirs: string[] = [];
 
 /** A fresh temporary directory, removed after the test. */

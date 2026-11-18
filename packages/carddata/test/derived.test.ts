@@ -10,6 +10,7 @@ import {
   openFixture,
   tempDir,
   copyFixture,
+  fixtureVersion,
 } from "./helpers.js";
 
 const count = (d: Derived, sql: string, ...args: string[]): number =>
@@ -29,7 +30,7 @@ describe("Derived", () => {
     );
     expect(count(derived, "SELECT COUNT(*) n FROM card_meta")).toBe(116);
     expect(derived.getMeta("tool_schema")).toBe(TOOL_SCHEMA);
-    expect(derived.getMeta("mtgjson_version")).toBe("5.3.0+20261115");
+    expect(derived.getMeta("mtgjson_version")).toBe(fixtureVersion);
     expect(derived.formatKeys().sort()).toEqual(
       [OFFICIAL_MODERN, preset.key].sort(),
     );

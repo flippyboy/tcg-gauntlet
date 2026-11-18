@@ -15,7 +15,12 @@ import {
   readCurrent,
   refreshCardData,
 } from "../src/index.js";
-import { OFFICIAL_MODERN, modernBuilds, tempDir } from "./helpers.js";
+import {
+  OFFICIAL_MODERN,
+  fixtureVersion,
+  modernBuilds,
+  tempDir,
+} from "./helpers.js";
 import {
   type TestServer,
   fixtureArchive,
@@ -81,7 +86,7 @@ describe("refreshCardData", () => {
     if (!opened.ok) return;
     const bolt = opened.lookup.findCard("lightning bolt")!;
     expect(opened.lookup.inPool(preset.key, bolt)).toBe(true);
-    expect(opened.lookup.dataVersion()).toBe("mtgjson 5.3.0+20261115");
+    expect(opened.lookup.dataVersion()).toBe(`mtgjson ${fixtureVersion}`);
     expect(opened.lookup.defaultPrinting(OFFICIAL_MODERN, bolt)).not.toBeNull();
     opened.lookup.close();
   });

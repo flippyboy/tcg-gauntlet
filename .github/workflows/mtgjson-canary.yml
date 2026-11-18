@@ -43,17 +43,25 @@ jobs:
       - name: Download MTGJSON and run the self-check
         run: pnpm --filter @tcg-gauntlet/carddata exec node scripts/canary.ts refresh --data-dir "$CANARY_DATA"
 
-      # Step 3: regenerate the fixtures (item 42) from the downloaded file. The
-      # committed fixtures must be identical.
-      - name: Regenerate the fixtures and fail on any difference
+      # Step 3: regenerate the fixtures (item 42) from the downloaded file and run
+      # the test suite on them. MTGJSON publishes a new build every day, so the
+      # fixtures almost always differ (the version string at least, often a new
+      # printing or an edited row). A difference alone is only a warning; tests
+      # that fail on the regenerated fixtures are an error.
+      - name: Regenerate the fixtures and run the tests on them
         run: |
           mtgjson="$CANARY_DATA/$(jq -r .path "$CANARY_DATA/mtgjson/current.json")"
           node scripts/build-fixtures.ts --mtgjson "$mtgjson"
-          if [ -n "$(git status --porcelain -- conformance/fixtures)" ]; then
-            git status --porcelain -- conformance/fixtures
-            echo "::error::The conformance fixtures differ from the newest MTGJSON release. Run 'node scripts/build-fixtures.ts --mtgjson <AllPrintings.sqlite>' and review the diff."
+          if [ -z "$(git status --porcelain -- conformance/fixtures)" ]; then
+            echo "The fixtures are identical to the newest MTGJSON release."
+            exit 0
+          fi
+          git diff --stat -- conformance/fixtures
+          if ! pnpm test; then
+            echo "::error::The tests fail on fixtures rebuilt from the newest MTGJSON release. Run 'node scripts/build-fixtures.ts --mtgjson <AllPrintings.sqlite>' locally and review the diff and the failing tests."
             exit 1
           fi
+          echo "::warning::The conformance fixtures are older than the newest MTGJSON release, and the tests pass on rebuilt ones. Refresh them when convenient: node scripts/build-fixtures.ts --mtgjson <AllPrintings.sqlite>"
 
       # Step 4: the conformance corpus through SqliteCardLookup, over the full file.
       - name: Run the conformance corpus through SqliteCardLookup

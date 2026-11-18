@@ -1191,7 +1191,7 @@ Each spike writes its findings to `docs/spikes/<name>.md`. Its throwaway scripts
     *   **Steps:**
         1. Download the latest MTGJSON.
         2. Run the `carddata` self-check.
-        3. Regenerate the fixtures (item 42) and fail if they differ.
+        3. Regenerate the fixtures (item 42) and run the test suite on them. A difference alone is a warning, since MTGJSON publishes a new build every day; failing tests are an error. (Changed after v1.0.2: the first version failed on any difference, so it failed every day.)
         4. Run the conformance corpus through `SqliteCardLookup`.
     *   **Failure handling:** a failing run notifies the maintainers through GitHub's normal workflow-failure email. No issue is opened.
     *   **Known limit:** GitHub disables scheduled workflows in public repos after 60 days with no repository activity, and the docs say so.
@@ -1678,7 +1678,7 @@ Each spike writes its findings to `docs/spikes/<name>.md`. Its throwaway scripts
     *   **Command:** `node scripts/build-fixtures.ts --mtgjson <path to AllPrintings.sqlite>`.
     *   **Selection:** it copies every row for the cards in `cards.txt`, and for their sets, from a real MTGJSON file into `mini-allprintings.sqlite`, which keeps the same tables and columns.
     *   **JSON fixture:** it writes the same data as `cards.json` for the fake lookup.
-    *   **Version control:** both outputs are committed. The canary (item 13) rebuilds them and fails if they differ.
+    *   **Version control:** both outputs are committed. The canary (item 13) rebuilds them, warns if they differ, and fails if the tests fail on the rebuilt files. Tests read the fixture's MTGJSON version from `cards.json` rather than hard-coding it.
 
 ### Phase 4 — `packages/carddata`
 
