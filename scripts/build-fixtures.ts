@@ -6,6 +6,9 @@
 // Usage: node scripts/build-fixtures.ts --mtgjson <path to AllPrintings.sqlite>
 // Needs Node 22.13 or newer (the built-in node:sqlite module; type stripping needs
 // 22.18 or newer, or --experimental-strip-types before that).
+// Run it with the Node version in .node-version, as the canary does: the SQLite file
+// header records the SQLite library version, so another Node gives different bytes
+// for the same data (for example: npx node@22 scripts/build-fixtures.ts ...).
 import {
   existsSync,
   mkdirSync,
